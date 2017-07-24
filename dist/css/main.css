@@ -1,0 +1,9 @@
+#arena {
+  width: 90vw;
+  height: 90vh;
+  border: solid; }
+
+.snake-part {
+  background: orange;
+  display: inline-block;
+  position: absolute; }
