@@ -4,26 +4,22 @@ export default class Snake {
 
 
     constructor(snakeLength) {
-        var DIRECTION_UP = 0;
-        var DIRECTION_RIGHT = 1;
-        var DIRECTION_DOWN = 2;
-        var DIRECTION_LEFT = 3;
 
-        this.setSnakeLength(snakeLength);
-        this.setSnakeDirection(this.DIRECTION_RIGHT);
+        this.setLength(snakeLength);
+        this.setDirection(this.DIRECTION_RIGHT);
 
     }
 
     initialize(startXPosition, startYPosition) {
-        this.generateSnakeParts(startXPosition, startYPosition);
+        this.generateParts(startXPosition, startYPosition);
     }
 
-    generateSnakeParts(startXPosition, startYPosition) {
+    generateParts(startXPosition, startYPosition) {
         this.snakeParts = [];
 
-        for(var i = 0; i < this.getSnakeLength(); i++) {
+        for(var i = 0; i < this.getLength(); i++) {
             var snakePart = new SnakePart(startXPosition + i, startYPosition);
-            snakePart.setSize(this.getSnakePartSize());
+            snakePart.setSize(this.getPartSize());
             
             this.snakeParts.push(snakePart);
         }
@@ -38,18 +34,98 @@ export default class Snake {
     }
 
     move() {
-        for(var i = 0; i < this.snakeParts.length; i++) {
-            this.snakeParts[i].moveTo();
+        for(var i = 0; i < this.snakeParts.length - 1; i++) {
+            this.snakeParts[i].moveTo(this.snakeParts[i + 1]);
         }
 
+        this.snakeParts[this.snakeParts.length - 1].move(this.getDirection());
+
+
     }
 
-    setSnakeLength(snakeLength) {
-        this.snakeLength = snakeLength;
+    isCollision() {
+        if(this.isCollisionWithSnake()) {
+            return true;
+        }
+
+        return this.isCollisionWithWall();
     }
 
-    getSnakeLength() {
-        return this.snakeLength;
+    isCollisionWithSnake() {
+        var firstSnakePart = this.getFirstSnakePart();
+
+        for(var i = 0; i < this.snakeParts.length - 1; i++) {
+            if(firstSnakePart.getXPosition() == this.snakeParts[i].getXPosition() &&
+               firstSnakePart.getYPosition() == this.snakeParts[i].getYPosition()) {
+                    return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    isCollisionWithWall() {
+        var firstSnakePart = this.getFirstSnakePart();
+        if(firstSnakePart.getXPixelPosition() < firstSnakePart.getSize()) {
+            return true;
+        }
+
+        if(firstSnakePart.getYPixelPosition() < firstSnakePart.getSize()) {
+            return true;
+        }
+
+        if(firstSnakePart.getYPixelPosition() >= this.getArenaElement().clientHeight) {
+            return true;
+        }
+
+        if(firstSnakePart.getXPixelPosition() >= this.getArenaElement().clientWidth) {
+            return true;
+        }
+
+        return false;
+  
+
+    }
+
+
+    checkIfHitDiv(div) {
+        var firstSnakePart = this.getFirstSnakePart();
+        var firstSnakePartDiv = firstSnakePart.getDiv();
+
+
+        var x1 = firstSnakePartDiv.offsetLeft;
+        var y1 = firstSnakePartDiv.offsetTop;
+        var h1 = firstSnakePartDiv.clientHeight;
+        var w1 = firstSnakePartDiv.clientWidth;
+        var b1 = y1 + h1;
+        var r1 = x1 + w1;
+        var x2 = div.offsetLeft;
+        var y2 = div.offsetTop;
+        var h2 = div.clientHeight;
+        var w2 = div.clientHeight;
+        var b2 = y2 + h2;
+        var r2 = x2 + w2;
+
+        if (b1 < y2 || y1 > b2 || r1 < x2 || x1 > r2) {
+            return false;
+        }
+        
+        return true;
+
+    }
+
+    getFirstSnakePart() {
+        return this.snakeParts[this.snakeParts.length - 1];
+
+    }
+
+    setLength(length) {
+        this.length = length;
+    }
+
+    getLength() {
+        return this.length;
     }
 
     setArenaElement(arenaElement) {
@@ -60,19 +136,19 @@ export default class Snake {
         return this.arenaElement;
     }
 
-    setSnakePartSize(snakePartSize) {
-        this.snakePartSize = snakePartSize;
+    setPartSize(partSize) {
+        this.partSize = partSize;
     }
 
-    getSnakePartSize() {
-        return this.snakePartSize;
+    getPartSize() {
+        return this.partSize;
     }
 
-    setSnakeDirection(direction) {
+    setDirection(direction) {
         this.direction = direction;
     }
 
-    getSnakeDirection() {
+    getDirection() {
         return this.direction;
     }
 }

@@ -1,7 +1,25 @@
 #arena {
   width: 90vw;
-  height: 90vh;
-  border: solid; }
+  height: 75vh;
+  border: solid;
+  position: relative;
+  margin: auto; }
+
+#equation {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  color: green;
+  font-size: 20pt;
+  padding: 20px; }
+
+.answer {
+  position: absolute;
+  background: green;
+  color: white;
+  display: block;
+  padding: 10px;
+  border-radius: 10px; }
 
 .snake-part {
   background: orange;
